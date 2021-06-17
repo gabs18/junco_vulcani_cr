@@ -1,0 +1,8 @@
+"0","# Cruce de datos de cantones"
+"0","junco_vulcani <- "
+"0","  junco_vulcani %>%"
+"0","  st_join(cantones[""canton""])"
+"2","although coordinates are longitude/latitude, st_intersects assumes that they are planar
+"
+"2","although coordinates are longitude/latitude, st_intersects assumes that they are planar
+"

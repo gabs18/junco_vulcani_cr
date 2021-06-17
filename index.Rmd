@@ -8,23 +8,86 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+<br>
+### Introducción
+<br>
+El junco de los páramos (*Junco vulcani*) habita en zonas abiertas en elevaciones altas, usualmente por encima de los 3000 m. Suele posarse sobre el suelo en pequeños arbustos, generalmente en parejas o en grupos pequeños. Su rango es muy limitado: solo en Costa Rica o en el oeste de Panamá (eBird, [Junco vulcani](https://ebird.org/species/voljun1)).
+<br>
+<br>
 
-## Introducción
+#### Carga de paquetes
+```{r, warning=FALSE, message=FALSE}
+library(dplyr)
+library(sf)
+library(DT)
+library(plotly)
+library(leaflet)
+```
+<br>
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+#### Carga de datos
+```{r carga-datos}
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+cantones <-
+  st_read(
+    "https://raw.githubusercontent.com/gf0604-procesamientodatosgeograficos/2021i-datos/main/ign/delimitacion-territorial-administrativa/cr_cantones_simp_wgs84.geojson",
+    quiet = TRUE
+  )
 
-```{r cars}
-summary(cars)
+
+# Carga de datos
+junco_vulcani <-
+  st_read(
+    "https://raw.githubusercontent.com/gf0604-procesamientodatosgeograficos/2021i-datos/main/gbif/junco_vulcani-cr-registros.csv",
+    options = c(
+      "X_POSSIBLE_NAMES=decimalLongitude",
+      "Y_POSSIBLE_NAMES=decimalLatitude"
+    ),
+    quiet = TRUE
+  )
+# Asignación de CRS
+st_crs(junco_vulcani) = 4326
+
+View(junco_vulcani)
+```
+<br>
+
+```{r}
+# Cruce de datos de cantones
+junco_vulcani <- 
+  junco_vulcani %>%
+  st_join(cantones["canton"])
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+### Tabla de registros de presencia
+```{r}
+junco_vulcani %>%
+  st_drop_geometry() %>%
+  select(stateProvince, canton, locality, eventDate) %>%
+  datatable(colnames = c(
+    "Provincia",
+    "Cantón",
+    "Localidad",
+    "Fecha"), 
+    options = list(searchHighlight = TRUE)
+  )
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+<br>
+
+### Gráfico de estacionalidad
+
+<br>
+
+
+### Gráfico de historial
+
+<br>
+
+
+### Mapa de distribución
+
+<br>
+
