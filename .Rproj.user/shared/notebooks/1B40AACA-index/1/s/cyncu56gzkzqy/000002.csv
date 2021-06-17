@@ -3,3 +3,4 @@
 "0","library(DT)"
 "0","library(plotly)"
 "0","library(leaflet)"
+"0","library(viridis)"

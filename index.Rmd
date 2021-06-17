@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 <br>
+
 ### Introducción
 <br>
 El junco de los páramos (*Junco vulcani*) habita en zonas abiertas en elevaciones altas, usualmente por encima de los 3000 m. Suele posarse sobre el suelo en pequeños arbustos, generalmente en parejas o en grupos pequeños. Su rango es muy limitado: solo en Costa Rica o en el oeste de Panamá (eBird, [Junco vulcani](https://ebird.org/species/voljun1)).
@@ -22,12 +23,16 @@ library(sf)
 library(DT)
 library(plotly)
 library(leaflet)
+library(viridis)
 ```
 <br>
 
 #### Carga de datos
 ```{r carga-datos}
+# Paleta de colores
+pal <- viridis(12)
 
+# Cantones
 cantones <-
   st_read(
     "https://raw.githubusercontent.com/gf0604-procesamientodatosgeograficos/2021i-datos/main/ign/delimitacion-territorial-administrativa/cr_cantones_simp_wgs84.geojson",
@@ -48,7 +53,6 @@ junco_vulcani <-
 # Asignación de CRS
 st_crs(junco_vulcani) = 4326
 
-View(junco_vulcani)
 ```
 <br>
 
@@ -78,16 +82,98 @@ junco_vulcani %>%
 <br>
 
 ### Gráfico de estacionalidad
+```{r}
+# Gráfico de registros de presencia por mes
+junco_vulcani %>%
+  st_drop_geometry() %>%
+  group_by(mes = format(as.Date(eventDate, "%Y-%m-%d"), "%m")) %>%
+  summarize(suma_registros = n()) %>%
+  filter(!is.na(mes))  %>%
+  plot_ly(x = ~ mes,
+          y = ~ suma_registros) %>%
+  layout(title = "Estacionalidad",
+         xaxis = list(title = "Mes"),
+         yaxis = list(title = "Cantidad de registros"))
+```
+
+```{r, warning = FALSE}
+# Gráfico de registros de presencia por mes
+junco_vulcani %>%
+  st_drop_geometry() %>%
+  group_by(anio = format(as.Date(eventDate, "%Y-%m-%d"), "%Y")) %>%
+  summarize(suma_registros = n()) %>%
+  filter(!is.na(anio))  %>%
+  filter(anio >= 2011) %>%
+  plot_ly(x = ~ anio,
+          y = ~ suma_registros, type = "bar", color = "pal") %>%
+  layout(title = "Estacionalidad",
+         xaxis = list(title = "Año"),
+         yaxis = list(title = "Cantidad de registros"))
+```
+
+
 
 <br>
 
 
 ### Gráfico de historial
+```{r}
+# Gráfico de registros de presencia por mes
+junco_vulcani %>%
+  st_drop_geometry() %>%
+  group_by(mes = format(as.Date(eventDate, "%Y-%m-%d"), "%m")) %>%
+  summarize(suma_registros = n()) %>%
+  filter(!is.na(mes))  %>%
+  plot_ly(x = ~ mes,
+          y = ~ suma_registros,
+          type="scatter", mode = "markers", fill = "tozeroy", fillcolor = "#009999") %>%
+  layout(title = "Estacionalidad",
+         xaxis = list(title = "Mes"),
+         yaxis = list(title = "Cantidad de registros"))
+```
+
 
 <br>
 
 
 ### Mapa de distribución
+```{r}
+# Mapa de registros de presencia
+junco_vulcani %>%
+  select(stateProvince,
+         canton,
+         locality,
+         eventDate) %>%
+  leaflet() %>%
+  addProviderTiles(providers$OpenStreetMap.Mapnik, group = "OpenStreetMap") %>%
+  addProviderTiles(providers$Stamen.TonerLite, group = "Stamen Toner Lite") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Imágenes de ESRI") %>%
+  addCircleMarkers(
+    stroke = F,
+    radius = 4,
+    fillColor = '#660099',
+    fillOpacity = 1,
+    popup = paste(
+      junco_vulcani$stateProvince,
+      junco_vulcani$canton,
+      junco_vulcani$locality,
+      junco_vulcani$eventDate,
+      sep = '<br/>'
+    ),
+    group = "Junco vulcani"
+  ) %>%
+  addLayersControl(
+    baseGroups = c("OpenStreetMap", "Stamen Toner Lite", "Imágenes de ESRI"),
+    overlayGroups = c("Terciopelos (Bothrops asper)")
+  ) %>%
+  addMiniMap(
+    tiles = providers$Stamen.OpenStreetMap.Mapnik,
+    position = "bottomleft",
+    toggleDisplay = TRUE
+  )
+```
+
+
 
 <br>
 

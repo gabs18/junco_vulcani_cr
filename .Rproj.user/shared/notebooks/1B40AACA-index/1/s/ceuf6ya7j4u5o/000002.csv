@@ -1,0 +1,19 @@
+"0","# Gráfico de registros de presencia por mes"
+"0","junco_vulcani %>%"
+"0","  st_drop_geometry() %>%"
+"0","  group_by(mes = format(as.Date(eventDate, ""%Y-%m-%d""), ""%m"")) %>%"
+"0","  summarize(suma_registros = n()) %>%"
+"0","  filter(!is.na(mes))  %>%"
+"0","  plot_ly(x = ~ mes,"
+"0","          y = ~ suma_registros) %>%"
+"0","  layout(title = ""Estacionalidad"","
+"0","         xaxis = list(title = ""Mes""),"
+"0","         yaxis = list(title = ""Cantidad de registros""))"
+"2","No trace type specified:
+  Based on info supplied, a 'bar' trace seems appropriate.
+  Read more about this trace type -> https://plotly.com/r/reference/#bar
+"
+"2","No trace type specified:
+  Based on info supplied, a 'bar' trace seems appropriate.
+  Read more about this trace type -> https://plotly.com/r/reference/#bar
+"

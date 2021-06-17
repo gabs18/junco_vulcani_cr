@@ -3,7 +3,7 @@
     "path": "~/UCR/Ciclo 2021 - I/GF0604 Procesamiento datos/Clases/index.Rmd",
     "project_path": "index.Rmd",
     "type": "r_markdown",
-    "hash": "260622897",
+    "hash": "1131638512",
     "contents": "",
     "dirty": false,
     "created": 1623937636287.0,
@@ -12,16 +12,16 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "30,0",
-        "scrollLine": "22",
+        "cursorPosition": "163,7",
+        "scrollLine": "133",
         "last_setup_crc32": "5B0A7F2Ebb338d19"
     },
     "folds": "",
-    "lastKnownWriteTime": 1623939648,
+    "lastKnownWriteTime": 1623942199,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1623939648094,
+    "last_content_update": 1623942199983,
     "read_only": false,
     "read_only_alternatives": []
 }
